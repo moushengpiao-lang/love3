@@ -1,1 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>朴谋圣 ❤️ 王晓采</title>
+    <style>
+        /* 强制背景为浅粉色，如果打开是粉色说明代码生效了 */
+        body { 
+            background-color: #fff5f5 !important; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        .card { 
+            background: white; 
+            width: 90%; 
+            max-width: 380px; 
+            padding: 25px; 
+            border-radius: 25px; 
+            text-align: center; 
+            border: 3px solid #ffccd5; 
+            box-shadow: 0 10px 30px rgba(255,182,193,0.5); 
+        }
+        h2 { color: #ff4d6d; margin: 10px 0; }
+        .names { color: #c9184a; font-weight: bold; font-size: 22px; margin-bottom: 15px; }
+        img { width: 100%; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .timer-box { background: #fff0f3; padding: 15px; border-radius: 15px; margin: 20px 0; border: 1px solid #ffccd5; }
+        #timer { font-size: 20px; color: #ff4d6d; font-weight: bold; }
+        audio { width: 100%; margin-top: 15px; }
+        .footer { font-size: 13px; color: #ffb6c1; margin-top: 15px; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>💖 我们的纪念时刻</h2>
+        <div class="names">朴谋圣 ❤️ 王晓采</div>
+        
+        <img src="合照.jpg" alt="我们的合照" onerror="this.src='https://via.placeholder.com/300x200?text=Wait+for+Image'">
 
+        <div class="timer-box">
+            <p style="margin:0; font-size:14px; color:#ff758f;">自 2023年3月16日 至今：</p>
+            <div id="timer">正在计算时间...</div>
+        </div>
+
+        <audio id="loveAudio" controls loop>
+            <source src="jumadiharyanto07-resting-in-your-presence-404294.mp3" type="audio/mpeg">
+        </audio>
+        
+        <div class="footer">“晓采，遇见你，是我最美的意外。”</div>
+    </div>
+
+    <script>
+        function updateTimer() {
+            const start = new Date("2023-03-16T00:00:00");
+            const now = new Date();
+            const diff = now - start;
+            
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const m = Math.floor((diff / (1000 * 60)) % 60);
+            const s = Math.floor((diff / 1000) % 60);
+            
+            document.getElementById('timer').innerHTML = 
+                d + "天 " + h + "时 " + m + "分 " + s + "秒";
+        }
+        
+        // 每秒更新一次
+        setInterval(updateTimer, 1000);
+        updateTimer();
+
+        // 解决微信不自动播放：点击页面任何地方播放音乐
+        document.addEventListener('click', function() {
+            document.getElementById('loveAudio').play();
+        }, { once: true });
+    </script>
+</body>
+</html>
