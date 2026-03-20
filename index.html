@@ -4,56 +4,165 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>朴谋圣 ❤️ 王晓采</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <style>
-        /* 强制背景为浅粉色，如果打开是粉色说明代码生效了 */
+        :root {
+            --rose-pink: #ff758f;
+            --rose-deep: #c9184a;
+            --rose-white: #fff5f5;
+            --border-color: #ffccd5;
+        }
+
+        * { box-sizing: border-box; }
+
         body { 
-            background-color: #fff5f5 !important; 
+            background: linear-gradient(135deg, #fffafa 0%, #ffe4e1 100%); 
             display: flex; 
             justify-content: center; 
             align-items: center; 
             min-height: 100vh; 
             margin: 0; 
             font-family: "Microsoft YaHei", sans-serif;
+            overflow: hidden; /* 防止爱心飘出屏幕 */
         }
+
+        /* 1. 开启礼盒封面 (解决自动播放的核心) */
+        #envelope-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(255, 245, 245, 0.98);
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            cursor: pointer; z-index: 100;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        #envelope-overlay.fade-out { opacity: 0; visibility: hidden; }
+
+        .heart-envelope {
+            font-size: 80px;
+            color: var(--rose-pink);
+            animation: pulseHeart 2s infinite;
+        }
+        .envelope-text {
+            color: var(--rose-deep);
+            font-size: 18px; font-weight: bold; margin-top: 20px;
+            letter-spacing: 1px;
+        }
+
+        /* 2. 漫天飞舞的爱心 */
+        .heart-bg {
+            position: absolute;
+            color: rgba(255, 117, 143, 0.3);
+            animation: floatHearts infinite ease-in;
+            z-index: 0;
+        }
+
+        /* 3. 浪漫纪念卡片 */
         .card { 
-            background: white; 
-            width: 90%; 
-            max-width: 380px; 
-            padding: 25px; 
-            border-radius: 25px; 
+            background: rgba(255, 255, 255, 0.7); /* 半透明玻璃效果 */
+            backdrop-filter: blur(10px); /* 模糊背景 */
+            width: 90%; max-width: 400px; 
+            padding: 25px; border-radius: 30px; 
             text-align: center; 
-            border: 3px solid #ffccd5; 
-            box-shadow: 0 10px 30px rgba(255,182,193,0.5); 
+            border: 2px solid rgba(255, 204, 213, 0.7);
+            box-shadow: 0 15px 45px rgba(255,182,193,0.3);
+            z-index: 10;
         }
-        h2 { color: #ff4d6d; margin: 10px 0; }
-        .names { color: #c9184a; font-weight: bold; font-size: 22px; margin-bottom: 15px; }
-        img { width: 100%; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .timer-box { background: #fff0f3; padding: 15px; border-radius: 15px; margin: 20px 0; border: 1px solid #ffccd5; }
-        #timer { font-size: 20px; color: #ff4d6d; font-weight: bold; }
-        audio { width: 100%; margin-top: 15px; }
-        .footer { font-size: 13px; color: #ffb6c1; margin-top: 15px; font-style: italic; }
+
+        h2 { color: var(--rose-deep); margin: 0 0 10px 0; font-family: 'Dancing Script', cursive; font-size: 28px; }
+        .names { color: var(--rose-deep); font-weight: bold; font-size: 22px; margin-bottom: 20px; }
+        
+        /* 相框特效 */
+        .photo-frame {
+            border: 10px solid white;
+            border-bottom: 30px solid white;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            transform: rotate(-1deg);
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAIklEQVQIW2NkQAKrVq36z8gAFWACjAAREwM4AWI4GzGCEQAXDwsD55R0KAAAAABJRU5ErkJggg=='); /* Rose texture */
+        }
+        img { width: 100%; border-radius: 5px; }
+
+        .timer-box { 
+            background: rgba(255, 255, 255, 0.5); 
+            padding: 18px; border-radius: 20px; 
+            margin: 20px 0; border: 1px solid rgba(255, 204, 213, 0.8); 
+        }
+        .timer-label { color: var(--rose-pink); font-size: 14px; margin: 0 0 5px 0; }
+        #timer { font-size: 24px; color: var(--rose-deep); font-weight: 800; animation: pulseText 1.5s infinite; }
+
+        /* 4. 自定义音乐播放按钮 (替换灰色的原生播放器) */
+        .custom-audio-wrapper { display: flex; justify-content: flex-end; margin-top: 10px; }
+        #audio-toggle {
+            background-color: transparent; border: 2px solid var(--rose-pink);
+            color: var(--rose-pink); padding: 8px 12px; border-radius: 20px;
+            cursor: pointer; font-size: 13px; font-weight: bold;
+            transition: all 0.3s; display: flex; align-items: center; gap: 5px;
+        }
+        #audio-toggle.playing { background-color: var(--rose-pink); color: white; }
+
+        .footer { font-size: 13px; color: #ffb6c1; margin-top: 20px; font-style: italic; font-weight: bold;}
+
+        /* Keyframes */
+        @keyframes floatHearts {
+            0% { transform: translateY(0vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+        @keyframes pulseHeart { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        @keyframes pulseText { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
+
     </style>
 </head>
 <body>
+
+    <div id="envelope-overlay" onclick="startRomanticJourney()">
+        <div class="heart-envelope">💌</div>
+        <div class="envelope-text">晓采，点击开启我们的故事...</div>
+    </div>
+
     <div class="card">
-        <h2>💖 我们的纪念时刻</h2>
+        <h2>✨ Anniversary Moment ✨</h2>
         <div class="names">朴谋圣 ❤️ 王晓采</div>
         
-        <img src="合照.jpg" alt="我们的合照" onerror="this.src='https://via.placeholder.com/300x200?text=Wait+for+Image'">
-
-        <div class="timer-box">
-            <p style="margin:0; font-size:14px; color:#ff758f;">自 2023年3月16日 至今：</p>
-            <div id="timer">正在计算时间...</div>
+        <div class="photo-frame">
+            <img src="合照.jpg" alt="我们的美好瞬間" onerror="this.src='https://via.placeholder.com/300x200?text=Wait+for+Image'">
         </div>
 
-        <audio id="loveAudio" controls loop>
+        <div class="timer-box">
+            <p class="timer-label">自 2023年3月16日 至今：</p>
+            <div id="timer">计算中...</div>
+        </div>
+
+        <div class="footer">“晓采，遇见你，是我最美的意外。”</div>
+
+        <audio id="loveAudio" loop>
             <source src="jumadiharyanto07-resting-in-your-presence-404294.mp3" type="audio/mpeg">
         </audio>
-        
-        <div class="footer">“晓采，遇见你，是我最美的意外。”</div>
+
+        <div class="custom-audio-wrapper">
+            <button id="audio-toggle" onclick="toggleAudio()"><span id="audio-icon">🎵</span> BGM</button>
+        </div>
     </div>
 
     <script>
+        // 1. 爱心背景生成
+        function createHearts() {
+            for (let i = 0; i < 30; i++) {
+                let heart = document.createElement('div');
+                heart.className = 'heart-bg';
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = (Math.random() * 100 + 100) + 'vh'; // 初始在屏幕下方
+                heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                heart.style.animationDelay = (Math.random() * 5) + 's';
+                document.body.appendChild(heart);
+            }
+        }
+        createHearts();
+
+        // 2. 计时器
         function updateTimer() {
             const start = new Date("2023-03-16T00:00:00");
             const now = new Date();
@@ -67,15 +176,43 @@
             document.getElementById('timer').innerHTML = 
                 d + "天 " + h + "时 " + m + "分 " + s + "秒";
         }
-        
-        // 每秒更新一次
         setInterval(updateTimer, 1000);
         updateTimer();
 
-        // 解决微信不自动播放：点击页面任何地方播放音乐
-        document.addEventListener('click', function() {
-            document.getElementById('loveAudio').play();
-        }, { once: true });
+        // 3. 核心逻辑：开启礼盒并播放音乐
+        function startRomanticJourney() {
+            const overlay = document.getElementById('envelope-overlay');
+            const audio = document.getElementById('loveAudio');
+            const toggle = document.getElementById('audio-toggle');
+            
+            // 尝试播放音乐 (绕过限制)
+            audio.play().catch(e => {{ console.log("等待用户点击按钮") }});
+            
+            // 如果成功播放，更新按钮状态
+            if (!audio.paused) {
+                toggle.classList.add('playing');
+                document.getElementById('audio-icon').innerHTML = '⏸️';
+            }
+
+            // 渐隐封面
+            overlay.classList.add('fade-out');
+        }
+
+        // 自定义音频按钮控制
+        function toggleAudio() {
+            const audio = document.getElementById('loveAudio');
+            const toggle = document.getElementById('audio-toggle');
+            
+            if (audio.paused) {
+                audio.play();
+                toggle.classList.add('playing');
+                document.getElementById('audio-icon').innerHTML = '⏸️';
+            } else {
+                audio.pause();
+                toggle.classList.remove('playing');
+                document.getElementById('audio-icon').innerHTML = '🎵';
+            }
+        }
     </script>
 </body>
 </html>
